@@ -5,6 +5,7 @@
 Напишите дескриптор Value, который будет использоваться в нашем классе Account
 """
 
+
 class Value:
     def __init__(self):
         self.amount = None
