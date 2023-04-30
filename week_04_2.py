@@ -30,11 +30,10 @@ class ValueV2:
         self.name = name
 
     def __get__(self, obj, obj_type):
-        return getattr(obj, self.name)
+        return obj.__dict__[self.name]
 
     def __set__(self, obj, value):
-        setattr(obj, self.name, value * (1 - obj.commission))
-
+        obj.__dict__[self.name] = value
 
 class AccountV2:
     amount = ValueV2()
@@ -48,6 +47,6 @@ if __name__ == '__main__':
     values.amount = 100
     print('Account =', values.amount)
 
-    values = AccountV2(0.1)
-    values.amount = 100
-    print('AccountV2 =', values.amount)
+    value1 = AccountV2(0.1)
+    value1.amount = 100
+    print('AccountV2 =', value1.amount)
