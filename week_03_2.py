@@ -1,3 +1,6 @@
+"""
+Классы и наследование
+"""
 import os.path
 import csv
 
