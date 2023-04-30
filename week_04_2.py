@@ -30,10 +30,10 @@ class ValueV2:
         self.name = name
 
     def __get__(self, obj, obj_type):
-        return obj.__dict__[self.name]
+        return getattr(obj, self.name)
 
     def __set__(self, obj, value):
-        obj.__dict__[self.name] = value * (1 - obj.commission)
+        setattr(obj, self.name, value * (1 - obj.commission))
 
 
 class AccountV2:
