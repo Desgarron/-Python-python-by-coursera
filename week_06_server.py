@@ -23,8 +23,9 @@ class ClientServerProtocol(asyncio.Protocol):
             return self.metric_storage.get(metric, 'ok\n\n')
 
         def _put_proccess(metric_name, metric_score, timestamp):
-            self.metric_storage.setdefault(metric_name, []).append((metric_score, timestamp))
+            self.metric_storage.setdefault(metric_name, []).append((timestamp, metric_score ))
             return 'ok\n\n'
+
         print('just for check dict ->', self.metric_storage)
         data = request.decode().split(maxsplit=1)
         print('process_data >>>', data, type(data))
