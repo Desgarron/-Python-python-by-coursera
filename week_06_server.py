@@ -2,10 +2,10 @@ import asyncio
 
 
 class ClientServerProtocol(asyncio.Protocol):
+    metric_storage = {}
 
     def connection_made(self, transport: asyncio.WriteTransport):
         self.transport = transport
-        self.metric_storage = {}
         print('transport => ', self.transport, type(self.transport), '\n')
 
     def data_received(self, data: bytearray):
@@ -18,12 +18,27 @@ class ClientServerProtocol(asyncio.Protocol):
 
         def _get_proccess(metric):
             print('_get_proccess -> ', metric)
-            if metric.strip() == '*':
-                return self.metric_storage
-            return self.metric_storage.get(metric, 'ok\n\n')
+            metric = metric.strip()
+            if metric == '*':
+                return 'ok\n' + '\n'.join(
+                    [' '.join([k, *value])
+                     for k, values in self.metric_storage.items()
+                     for value in values]
+                ) + '\n\n'
+            if metric in self.metric_storage:
+                return 'ok\n' + '\n'.join(
+                    [' '.join([k, *value])
+                     for k, values in self.metric_storage.items()
+                     for value in values if k == metric]
+                ) + '\n\n'
+            return 'ok\n\n'
 
         def _put_proccess(metric_name, metric_score, timestamp):
-            self.metric_storage.setdefault(metric_name, []).append((timestamp, metric_score ))
+            for i in range(len(self.metric_storage.get(metric_name, ''))):
+                print('sad', self.metric_storage[metric_name][i])
+                if self.metric_storage[metric_name][i][1] == timestamp:
+                    del self.metric_storage[metric_name][i]
+            self.metric_storage.setdefault(metric_name, []).append((metric_score, timestamp))
             return 'ok\n\n'
 
         print('just for check dict ->', self.metric_storage)
